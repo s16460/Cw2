@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cwiczenia2.DTO;
 using Cwiczenia2.Models;
 
 namespace Cwiczenia2.Logic
@@ -11,6 +12,6 @@ namespace Cwiczenia2.Logic
     List<Student> getStudentsFromDb();
 
     List<String> getStudentSemester(string id);
-
+ 
     }
 }

@@ -14,7 +14,12 @@ namespace Cwiczenia2.Controllers {
 
     public class StudentController : ControllerBase {
 
-        private readonly StudentDb studentDb = new StudentDbImpl();
+        private readonly StudentDb studentDb;
+
+        public StudentController(StudentDb studentDb)
+        {
+            this.studentDb = studentDb;
+        }
 
         [HttpGet]
         public IActionResult GetStudents() {

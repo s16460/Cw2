@@ -1,0 +1,45 @@
+﻿-- ================================================
+-- Template generated from Template Explorer using:
+-- Create Procedure (New Menu).SQL
+--
+-- Use the Specify Values for Template Parameters 
+-- command (Ctrl-Shift-M) to fill in the parameter 
+-- values below.
+--
+-- This block of comments will not be included in
+-- the definition of the procedure.
+-- ================================================
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE StudentsPromotion
+	-- Add the parameters for the stored procedure here
+	@Studies varchar(100),
+	@Semester int
+AS
+BEGIN
+	DECLARE @newEnrolemntNumber int, @oldEnrolmentNumber int, @idStudy int;
+    
+    select @idStudy = IdStudy from Studies where name = @Studies;
+    
+    select @oldEnrolmentNumber = IdEnrollment from Enrollment where Semester = @Semester AND IdStudy = @idStudy;
+    
+    select @newEnrolemntNumber = IdEnrollment from Enrollment where Semester = @Semester+1 AND IdStudy = @idStudy;
+    
+    IF @newEnrolemntNumber IS NULL
+
+    BEGIN
+        select @newEnrolemntNumber = MAX(IdEnrollment)+1 from Enrollment;
+        insert into  Enrollment (IdEnrollment, Semester, IdStudy, StartDate) values (@newEnrolemntNumber, @Semester+1, @idStudy, GETDATE())
+    END;
+	
+
+    UPDATE Student SET IdEnrollment = @newEnrolemntNumber WHERE IdEnrollment = @oldEnrolmentNumber;
+END
+GO

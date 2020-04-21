@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Cwiczenia2.DTO;
 using Cwiczenia2.Models;
 
 namespace Cwiczenia2.Logic
@@ -65,5 +67,6 @@ namespace Cwiczenia2.Logic
             }
             return studentsList;
         }
+
     }
 }
