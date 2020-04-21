@@ -7,11 +7,14 @@ using Cwiczenia2.Models;
 
 namespace Cwiczenia2.Logic
 {
-    public interface StudentDb {
+    public interface StudentDb
+    {
 
-    List<Student> getStudentsFromDb();
+        List<Student> getStudentsFromDb();
 
-    List<String> getStudentSemester(string id);
- 
+        List<String> getStudentSemester(string id);
+
+        bool checkIfStudentExists(string index);
+
     }
 }

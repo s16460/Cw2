@@ -1,4 +1,5 @@
 ﻿using Cwiczenia2.DTO;
+using Cwiczenia2.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -10,11 +11,9 @@ namespace Cwiczenia2.Logic
     public class IEnrolementDbImpl : IEnrolmentDb
     {
 
-        private string dbAddress = "Data Source=db-mssql;Initial Catalog=s16460;Integrated Security=True";
-
         public EnrolmentResp enrolStudent(EnrolmentReq req)
         {
-            using (SqlConnection connection = new SqlConnection(dbAddress))
+            using (SqlConnection connection = new SqlConnection(SystemConsts.DB_ADDRESS))
 
             using (SqlCommand command = new SqlCommand())
             {
@@ -114,7 +113,7 @@ namespace Cwiczenia2.Logic
 
         public PromotionsResp promoteStudents(PromotionsReq req)
         {
-            using (SqlConnection connection = new SqlConnection(dbAddress))
+            using (SqlConnection connection = new SqlConnection(SystemConsts.DB_ADDRESS))
             using (SqlCommand command = new SqlCommand())
             {
                 connection.Open();
