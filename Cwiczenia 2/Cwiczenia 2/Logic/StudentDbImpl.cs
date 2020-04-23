@@ -22,12 +22,9 @@ namespace Cwiczenia2.Logic
                 com.Connection = con;
                 com.CommandText = "select * from Student where IndexNumber = @index";
                 com.Parameters.AddWithValue("@index", indexNumber);
-                Console.WriteLine("drugi index number " + indexNumber);
-                Console.WriteLine("comand text " + com.CommandText);
                 var reader = com.ExecuteReader();
                 if (!reader.Read())
                 {
-                    Console.WriteLine("jestem tutaj22");
                     return true;
                 }
                 return false;

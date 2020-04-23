@@ -24,9 +24,8 @@ namespace Cwiczenia2.Logic
                 command.Transaction = transaction;
 
 
-                command.CommandText = "select IdStudy from Studies where Name = @StudyName";
-                SqlParameter param = new SqlParameter("@StudyName", req.Studies);
-                command.Parameters.Add(param);
+                command.CommandText = SystemConsts.DB_GET_STUDY_ID_BY_STUDY_NAME;
+                command.Parameters.AddWithValue("@StudyName", req.Studies);
 
                 var reader = command.ExecuteReader();
                 int StudiesId = 0;
@@ -45,9 +44,12 @@ namespace Cwiczenia2.Logic
 
                 reader.Close();
 
-                command.CommandText = "select * from Enrollment where Semester=1 and IdStudy=@IdStudies";
-                SqlParameter param2 = new SqlParameter("@IdStudies", StudiesId);
-                command.Parameters.Add(param2);
+                command.CommandText = SystemConsts.DB_SELECT_ALL_FROM_ENROLMENT_BY_SEMESTER_AND_STUDIES_ID;
+                command.Parameters.Clear();
+
+                command.Parameters.AddWithValue("@Semester", 1);
+                command.Parameters.AddWithValue("@IdStudies", StudiesId);
+
                 int IdEnrollment = 0;
                 reader = command.ExecuteReader();
 
@@ -58,23 +60,28 @@ namespace Cwiczenia2.Logic
                 }
                 else
                 {
-                    command.CommandText = "select max(IdEnrollment) as EnrolmentMaxId from Enrollment where Semester = 1";
+                    command.CommandText = "select max(IdEnrollment) as EnrolmentMaxId from Enrollment where Semester = @Semester";
                     reader = command.ExecuteReader();
 
                     IdEnrollment = Int32.Parse(reader["EnrolmentMaxId"].ToString());
+                    
+                    command.CommandText = SystemConsts.DB_INSERT_ENROLMENT;
                     DateTime todayDate = DateTime.Today;
-                    command.CommandText = "insert into Enrollment (IdEnrollment, IdStudy, Semester, StartDate)values (@EnrolmentId, @IdStudies, 1, @TodayDate);";
+                    command.Parameters.AddWithValue("@TodayDate", todayDate);
+                    command.Parameters.AddWithValue("@EnrolmentId", IdEnrollment);
+                    /*DateTime todayDate = DateTime.Today;
                     SqlParameter param3 = new SqlParameter("@TodayDate", todayDate);
                     command.Parameters.Add(param3);
                     SqlParameter param4 = new SqlParameter("@EnrolmentId", IdEnrollment);
-                    command.Parameters.Add(param3);
+                    command.Parameters.Add(param3);*/
                     command.ExecuteNonQuery();
 
                 }
                 reader.Close();
 
-                command.CommandText = "select * from Student where IndexNumber=@IndexNumber";
+                command.CommandText = SystemConsts.DB_SELECT_ALL_FROM_STUDENTS_BY_INDEX_NUMBER;
                 command.Parameters.Clear();
+
                 SqlParameter param5 = new SqlParameter("@IndexNumber", req.IndexNumber);
                 command.Parameters.Add(param5);
 
@@ -90,7 +97,7 @@ namespace Cwiczenia2.Logic
 
                 reader.Close();
 
-                command.CommandText = "insert into student(IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) values(@index, @name, @LastName, @BirthDate, @EnrolemntId)";
+                command.CommandText = SystemConsts.DB_INSERT_STUDENT;
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@index", req.IndexNumber);
                 command.Parameters.AddWithValue("@name", req.FirstName);
@@ -118,46 +125,44 @@ namespace Cwiczenia2.Logic
             {
                 connection.Open();
                 command.Connection = connection;
-
-                command.CommandText = "select IdEnrollment, Semester, StartDate, S.IdStudy IdStudy from Enrollment E join Studies S on S.IdStudy = E.IdStudy where Semester = @semestr and S.Name = @name";
-                command.Parameters.AddWithValue("@semestr", req.Semester);
-                command.Parameters.AddWithValue("@name", req.Studies);
-
-                var reader = command.ExecuteReader();
-
-                if (!reader.Read())
-                {
-                    reader.Close();
-                    return null;
-                }
-
-                reader.Close();
-
+                
+                getPromotiont(command, req.Studies, req.Semester);
+ 
                 command.CommandText = "EXECUTE dbo.StudentsPromotion @Studies, @Semester";
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@Studies", req.Studies);
                 command.Parameters.AddWithValue("@Semester", req.Semester);
                 command.ExecuteNonQuery();
 
-                command.CommandText = "select IdEnrollment, Semester, StartDate, S.IdStudy IdStudy from Enrollment E join Studies S on S.IdStudy = E.IdStudy where Semester = @semestr and S.Name = @name";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@semestr", req.Semester + 1);
-                command.Parameters.AddWithValue("@name", req.Studies);
-
-                reader = command.ExecuteReader();
-
-                var resp = new PromotionsResp();
-                if (reader.Read())
-                {
-                    resp.IdEnrollment = Int32.Parse(reader["IdEnrollment"].ToString());
-                    resp.Semester = Int32.Parse(reader["Semester"].ToString());
-                    resp.IdStudy = Int32.Parse(reader["IdStudy"].ToString());
-                    resp.StartDate = DateTime.Parse(reader["StartDate"].ToString());
-                }
-
-                return resp;
+                return getPromotiont(command, req.Studies, req.Semester+1);
 
             }
+        }
+
+        private PromotionsResp getPromotiont(SqlCommand command, String studies, int semester)
+        {
+            command.CommandText = SystemConsts.DB_QUERRY_GET_ENROLMENT_BY_NAME_AND_STUDY_ID;
+            command.Parameters.AddWithValue("@semestr", semester);
+            command.Parameters.AddWithValue("@name", studies);
+
+            var reader = command.ExecuteReader();
+
+            if (!reader.Read())
+            {
+                reader.Close();
+                return null;
+            }
+
+            var resp = new PromotionsResp();
+            
+           
+                resp.IdEnrollment = Int32.Parse(reader["IdEnrollment"].ToString());
+                resp.Semester = Int32.Parse(reader["Semester"].ToString());
+                resp.IdStudy = Int32.Parse(reader["IdStudy"].ToString());
+                resp.StartDate = DateTime.Parse(reader["StartDate"].ToString());
+            
+            reader.Close();
+            return resp;
         }
     }
 }
