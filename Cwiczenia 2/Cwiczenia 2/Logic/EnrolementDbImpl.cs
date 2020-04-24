@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cwiczenia2.Logic
 {
-    public class IEnrolementDbImpl : IEnrolmentDb
+    public class EnrolementDbImpl : IEnrolmentDb
     {
 
         public EnrolmentResp enrolStudent(EnrolmentReq req)
@@ -69,11 +69,6 @@ namespace Cwiczenia2.Logic
                     DateTime todayDate = DateTime.Today;
                     command.Parameters.AddWithValue("@TodayDate", todayDate);
                     command.Parameters.AddWithValue("@EnrolmentId", IdEnrollment);
-                    /*DateTime todayDate = DateTime.Today;
-                    SqlParameter param3 = new SqlParameter("@TodayDate", todayDate);
-                    command.Parameters.Add(param3);
-                    SqlParameter param4 = new SqlParameter("@EnrolmentId", IdEnrollment);
-                    command.Parameters.Add(param3);*/
                     command.ExecuteNonQuery();
 
                 }
@@ -125,8 +120,8 @@ namespace Cwiczenia2.Logic
             {
                 connection.Open();
                 command.Connection = connection;
-                
-                getPromotiont(command, req.Studies, req.Semester);
+
+                getPromotiontByStudiesAndSemester(command, req.Studies, req.Semester);
  
                 command.CommandText = "EXECUTE dbo.StudentsPromotion @Studies, @Semester";
                 command.Parameters.Clear();
@@ -134,12 +129,12 @@ namespace Cwiczenia2.Logic
                 command.Parameters.AddWithValue("@Semester", req.Semester);
                 command.ExecuteNonQuery();
 
-                return getPromotiont(command, req.Studies, req.Semester+1);
+                return getPromotiontByStudiesAndSemester(command, req.Studies, req.Semester+1);
 
             }
         }
 
-        private PromotionsResp getPromotiont(SqlCommand command, String studies, int semester)
+        private PromotionsResp getPromotiontByStudiesAndSemester(SqlCommand command, String studies, int semester)
         {
             command.CommandText = SystemConsts.DB_QUERRY_GET_ENROLMENT_BY_NAME_AND_STUDY_ID;
             command.Parameters.AddWithValue("@semestr", semester);

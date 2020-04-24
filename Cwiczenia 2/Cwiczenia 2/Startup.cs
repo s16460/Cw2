@@ -29,7 +29,7 @@ namespace Cwiczenia_2
         {
             //tutaj dodajemy interefejsy           
             services.AddSingleton<StudentDb, StudentDbImpl>();
-            services.AddSingleton<IEnrolmentDb, IEnrolementDbImpl>();
+            services.AddSingleton<IEnrolmentDb, EnrolementDbImpl>();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

@@ -17,6 +17,7 @@ namespace Cwiczenia2.DTO
     [Required]
     public string LastName { get; set; }
 
+    [Required]
     public DateTime BirthDate { get; set; }
 
     [Required]
