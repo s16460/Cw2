@@ -26,7 +26,7 @@ namespace Cwiczenia2.Controllers
             var resp = enrolmentDb.enrolStudent(request);
             if (resp == null)
             {
-                return BadRequest();
+                return BadRequest("nie istnieja studia lub taki student juz istnieje");
             }
             return CreatedAtAction("enrolemnt created",resp);
             //return Ok(resp);
@@ -40,7 +40,7 @@ namespace Cwiczenia2.Controllers
         {
             var resp = enrolmentDb.promoteStudents(request);
             if (resp == null)
-                return NotFound();
+                return NotFound("zły semestr lub student");
 
             return Ok(resp);
         }
