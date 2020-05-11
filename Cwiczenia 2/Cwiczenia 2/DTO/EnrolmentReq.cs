@@ -23,6 +23,9 @@ namespace Cwiczenia2.DTO
     [Required]
     public string Studies { get; set; }
 
+    [Required]
+    public string password { get; set; }
+
 
 }
 }

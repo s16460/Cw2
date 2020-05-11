@@ -11,7 +11,7 @@ namespace Cwiczenia2.Logic
     public class EnrolementDbImpl : IEnrolmentDb
     {
 
-        public EnrolmentResp enrolStudent(EnrolmentReq req)
+        public EnrolmentResp enrolStudent(EnrolmentReq req, string salt)
         {
             using (SqlConnection connection = new SqlConnection(SystemConsts.DB_ADDRESS))
 
@@ -99,6 +99,8 @@ namespace Cwiczenia2.Logic
                 command.Parameters.AddWithValue("@LastName", req.LastName);
                 command.Parameters.AddWithValue("@BirthDate", req.BirthDate);
                 command.Parameters.AddWithValue("@EnrolemntId", IdEnrollment);
+                command.Parameters.AddWithValue("@Password", req.password);
+                command.Parameters.AddWithValue("@Salt", salt);
 
                 command.ExecuteNonQuery();
 

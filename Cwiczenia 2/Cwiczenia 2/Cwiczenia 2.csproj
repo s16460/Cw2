@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>15cb1d85-b0ab-4a64-9615-dc6a349ccc3e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>

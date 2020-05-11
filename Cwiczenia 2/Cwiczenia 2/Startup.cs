@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Cwiczenia2.Logic;
 using Cwiczenia2.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Cwiczenia_2
 {
@@ -27,9 +29,25 @@ namespace Cwiczenia_2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(ops =>
+            {
+                ops.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = "Program",
+                    ValidAudience = "Ktokolwiek",
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
+                };
+            });
+
+
             //tutaj dodajemy interefejsy           
             services.AddSingleton<StudentDb, StudentDbImpl>();
             services.AddSingleton<IEnrolmentDb, EnrolementDbImpl>();
+            services.AddSingleton<ISecurityDb, SecurityDbImpl>();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -79,6 +97,7 @@ namespace Cwiczenia_2
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();       
 
             app.UseMvc(routes =>
             {

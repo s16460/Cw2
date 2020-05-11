@@ -6,12 +6,13 @@ using Cwiczenia2.Logic;
 using Cwiczenia2.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cwiczenia2.Controllers {
 
     [ApiController]
     [Route("api/students")]
-
+    [Authorize(Roles = "Employee")]
     public class StudentController : ControllerBase {
 
         private readonly StudentDb studentDb;
