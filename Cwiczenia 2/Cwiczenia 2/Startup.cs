@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cwiczenia2.EntityModel;
 using Cwiczenia2.Logic;
 using Cwiczenia2.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -48,6 +50,11 @@ namespace Cwiczenia_2
             services.AddSingleton<StudentDb, StudentDbImpl>();
             services.AddSingleton<IEnrolmentDb, EnrolementDbImpl>();
             services.AddSingleton<ISecurityDb, SecurityDbImpl>();
+            services.AddTransient<IEntityStudent, EntityStudentImpl>();
+            services.AddDbContext<s16460Context>(options =>
+            {
+                options.UseSqlServer(Configuration["ConnectionStrings:DB"]);
+            });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

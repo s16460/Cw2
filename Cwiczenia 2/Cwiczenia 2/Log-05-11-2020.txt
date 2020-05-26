@@ -1,4 +1,0 @@
-Method= GET
-Path= /
-Body= 
-QueryString= 
