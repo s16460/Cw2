@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cwiczenia2.Logic
 {
-    public class EntityStudentImpl : ControllerBase, IEntityStudent
+    public class EntityStudentImpl : IEntityStudent
     {
 
         private readonly s16460Context context;
@@ -22,7 +22,7 @@ namespace Cwiczenia2.Logic
         }
 
 
-        public IActionResult getStudents()
+        public List<EntityStudentResponse> getStudents()
         {
             List<EntityStudentResponse> students = context.Student.Select(s => new EntityStudentResponse
             {
@@ -35,17 +35,17 @@ namespace Cwiczenia2.Logic
                 Semestr = s.IdEnrollmentNavigation.Semester
             }).ToList();
 
-            return Ok(students);
+            return students;
         }
 
-        public IActionResult updateStudent(EntityUpdateStudent student)
+        public Student updateStudent(EntityUpdateStudent student)
         {
             Student studentFromDB = context.Student.Where(s => s.IndexNumber == student.IndexNumber).FirstOrDefault();
 
             Console.WriteLine(studentFromDB);
             if (studentFromDB == null)
             {
-                return BadRequest("student nie istnieje");
+                return null;
             }
 
             studentFromDB.FirstName = student.FirstName;
@@ -58,20 +58,20 @@ namespace Cwiczenia2.Logic
             }
             catch (Exception)
             {
-                return BadRequest("updejt sie nie udal");
+                return null;
             }
 
-            return Ok(studentFromDB);
+            return studentFromDB;
         }
 
-        public IActionResult deleteStudent(string indexNumber)
+        public String deleteStudent(string indexNumber)
         {
             Student studentFromDB = context.Student.Where(s => s.IndexNumber == indexNumber).FirstOrDefault();
 
 
             if (studentFromDB == null)
             {
-                return BadRequest("nie ma studenta");
+                return null;
             }
             try
             {
@@ -81,32 +81,32 @@ namespace Cwiczenia2.Logic
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return BadRequest("Nie moge usunac studenta o id " + indexNumber);
+                return null;
             }
-            return Ok("Student usuniety");
+            return "Student usuniety";
         }
 
-        public IActionResult promoteStudents(PromotionsReq request)
+        public String promoteStudents(PromotionsReq request)
         {
             var enrolments = context.Enrollment.Where(e => e.Semester == request.Semester).Where(e => e.IdStudyNavigation.Name == request.Studies).ToList();
             if (enrolments.Count == 0 || enrolments == null)
             {
-                return BadRequest("nie udalo się zwiekszyc lvl, semestr lub studia nie istnieja");
+                return null;
             }
             enrolments.ForEach(e => e.Semester = e.Semester + 1);
             enrolments.ForEach(e => context.Enrollment.Update(e));
             context.SaveChanges();
 
-            return Ok("udało się zwiekszyć lvl studentów");
+            return "udało się zwiekszyć lvl studentów";
         }
 
-        public IActionResult enrollStudent(EnrolmentReq request)
+        public String enrollStudent(EnrolmentReq request)
         {
             var studentToCheck = context.Student.Where(s => s.IndexNumber == request.IndexNumber).FirstOrDefault();
 
             if (studentToCheck != null)
             {
-                return BadRequest("student istnieje");
+                return null;
             }
 
             string salt = "";
@@ -131,7 +131,7 @@ namespace Cwiczenia2.Logic
             var studies = context.Studies.Where(s => s.Name == request.Studies).FirstOrDefault();
             if (studies == null)
             {
-                return BadRequest("Nie ma takich studiów");
+                return null;
             }
 
             int maxenrolment = context.Enrollment.Max(e => e.IdEnrollment) + 1;
@@ -164,11 +164,11 @@ namespace Cwiczenia2.Logic
 			catch(Exception e) 
 			{
 				Console.WriteLine(e.StackTrace);
-                return BadRequest("Nie moge dodac studenta o indexie "+ student.IndexNumber);
+                return null;
 			}
 
             Console.WriteLine(student.ToString());
-            return Ok("student o indexie " + student.IndexNumber + " utworzony");
+            return "student o indexie " + student.IndexNumber + " utworzony";
         }
     }
 }

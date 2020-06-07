@@ -11,11 +11,11 @@ namespace Cwiczenia2.Logic
     public interface IEntityStudent
 {
 
-        IActionResult getStudents();
-        IActionResult updateStudent(EntityUpdateStudent student);
-        IActionResult deleteStudent(string indexNumber);
-        IActionResult promoteStudents(PromotionsReq request);
-        IActionResult enrollStudent(EnrolmentReq request);
+        List<EntityStudentResponse> getStudents();
+        Student updateStudent(EntityUpdateStudent student);
+        String deleteStudent(string indexNumber);
+        String promoteStudents(PromotionsReq request);
+        String enrollStudent(EnrolmentReq request);
 
 
 }

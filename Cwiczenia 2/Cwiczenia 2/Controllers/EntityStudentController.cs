@@ -42,16 +42,19 @@ namespace Cwiczenia2.Controllers
                 Studies = s.IdEnrollmentNavigation.IdStudyNavigation.Name,
                 Semestr = s.IdEnrollmentNavigation.Semester
             }).ToList();*/
-
-            return entityStudent.getStudents(); 
+            
+            return Ok(entityStudent.getStudents()); 
         }
 
 
         [HttpPut]
         public IActionResult UpdateStudent(EntityUpdateStudent student)
         {
-
-            return entityStudent.updateStudent(student);
+            Student resp = entityStudent.updateStudent(student);
+            if (resp == null) {
+                return BadRequest("problem z updejtem studenta");
+            }
+            return Ok(resp);
         }
 
 
@@ -59,7 +62,13 @@ namespace Cwiczenia2.Controllers
         public IActionResult DeleteStudent(string indexNumber)
         {
            
-            return entityStudent.deleteStudent(indexNumber);
+            String resp = entityStudent.deleteStudent(indexNumber);
+            if (resp == null)
+            { 
+                return BadRequest("problem z usuwaniem");
+            }
+
+            return Ok(resp);
 
         }
 
@@ -68,7 +77,14 @@ namespace Cwiczenia2.Controllers
         public IActionResult PromoteStudents(PromotionsReq request)
         {
             
-            return entityStudent.promoteStudents(request);
+            String resp = entityStudent.promoteStudents(request);
+
+            if (resp == null)
+            {
+                return BadRequest("problem z promocja");
+            }
+
+            return Ok(resp);
 
         }
 
@@ -76,8 +92,14 @@ namespace Cwiczenia2.Controllers
         [Route("enroll")]
         public IActionResult EnrollStudent(EnrolmentReq request)
         {
+            String resp = entityStudent.enrollStudent(request);
 
-            return entityStudent.enrollStudent(request);
+            if (resp == null)
+            {
+                return BadRequest("problem wpisaniem studenta");
+            }
+
+            return Ok(resp);
 
         }
     }
